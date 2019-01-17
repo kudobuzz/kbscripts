@@ -1,3 +1,5 @@
+'use strict'
+
 module.exports = {
   extends: [
     require.resolve('eslint-config-standard'),
@@ -5,6 +7,7 @@ module.exports = {
   ],
   plugins: ['security', 'mocha', 'no-loops', 'this'],
   rules: {
+    'strict': ['error'],
     'this/no-this': 'error',
     'no-loops/no-loops': 2,
     'mocha/handle-done-callback': 'error',
