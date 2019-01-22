@@ -1,6 +1,6 @@
 {
-  "name": "kb-scripts",
-  "version": "1.0.0",
+  "name": "@kudobuzz/kbscripts",
+  "version": "0.0.1",
   "description": "Configuration and scripts for kudobuzz projects",
   "bin": {
     "kb-scripts": "bin/kb-scripts"
