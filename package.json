@@ -1,9 +1,9 @@
 {
   "name": "@kudobuzz/kbscripts",
-  "version": "0.0.4",
+  "version": "0.0.3",
   "description": "Configuration and scripts for kudobuzz projects",
   "bin": {
-    "kbscripts": "./bin/kbscripts.js"
+    "kbscripts": "./bin/kb-scripts.js"
   },
   "scripts": {
     "lint": "node bin lint",
