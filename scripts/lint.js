@@ -10,7 +10,6 @@ const parsedAgs = yargs(args)
 
 function hereRelative (p) {
   const b = path.join(__dirname, p).replace(process.cwd(), '.')
-  console.log(b)
   return b
 }
 function getPathToGlobalCommand (executable) {

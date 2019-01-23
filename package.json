@@ -3,7 +3,7 @@
   "version": "0.0.3",
   "description": "Configuration and scripts for kudobuzz projects",
   "bin": {
-    "kb-scripts": "bin/kb-scripts.js"
+    "kbscripts": "./bin/kbscripts.js"
   },
   "scripts": {
     "lint": "node bin lint",
