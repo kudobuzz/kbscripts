@@ -7,7 +7,7 @@
   },
   "scripts": {
     "lint": "node bin lint",
-    "test": "node bin test '*.test.js'"
+    "test": "mocha --recursive '**/*.test.js'"
   },
   "repository": {
     "type": "git",
