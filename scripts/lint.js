@@ -28,7 +28,6 @@ const resolveParams = {
   cwd: process.cwd()
 }
 
-console.log(filesToApply, args)
 const result = spawn.sync(
   resolveExecutable(executable, resolveParams),
   [...config, ...args, ...filesToApply],

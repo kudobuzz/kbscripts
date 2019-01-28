@@ -2,10 +2,7 @@
 
 const spawn = require('cross-spawn')
 const yargs = require('yargs-parser')
-const {
-  getPathToGlobalCommand,
-  resolveExecutable
-} = require('../common/utils')
+const { getPathToGlobalCommand, hereRelative, resolveExecutable } = require('../common/utils')
 
 let args = process.argv.slice(2)
 const parsedAgs = yargs(args)
@@ -19,7 +16,7 @@ args = wasGivenFiles
   ? args.filter(arg => parsedAgs._.includes(arg) || arg.endsWith('.js'))
   : args
 
-const config = ['--recursive', '--exclude', '**/node_modules/**']
+const config = ['--recursive', '--exclude', '**/node_modules/**', '--opts', hereRelative('../config/mocha.opts')]
 
 const resolveParams = {
   pathToGlobalCommand: getPathToGlobalCommand(executable),
@@ -29,7 +26,7 @@ const resolveParams = {
 
 const result = spawn.sync(
   resolveExecutable(executable, resolveParams),
-  [...config, ...filesToApply],
+  [...config, ...args, ...filesToApply],
   { stdio: 'inherit' }
 )
 
