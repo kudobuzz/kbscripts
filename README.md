@@ -1,24 +1,49 @@
-# kb-scripts
-A bunch of scripts to create a zero config for all our Nodejs Projects
+<div align="center">
+<h1>kbscripts 🛠</h1>
 
+<p>CLI toolbox for common scripts across kudobuzz</p>
+</div>
+
+<hr />
 
 # Problem
-Read blog
+
+We have quite a number of js projects and we were finding it difficult updating tooling across these projects
 
 # Solution
+
 A common configuration library
+
+# Installation
+
+This module is distributed via [npm][npm] which is bundled with [node][node] and
+should be installed as one of your project's `devDependencies`:
+
+```
+npm install --save-dev @kudobuzz/kbscripts
+```
 
 # Usage
 
 Install my running `npm install @kudobuzz/kbscripts`
-1. `kbscripts lint`  
 
-    Lints all js files in the target project.
+## Scripts
 
-2. `kbscripts prettier`  
+1. `kbscripts lint [Specific files can go here and args for eslint]`
 
-    Prettifies all js files in the target project.
+   Lints all js files in the target project.
 
-3. `kbscripts test`  
+2. `kbscripts format [Specific files can go here and other args to prettier]`  
+   Format all js,md,ts,css files in the target project.
 
-    Runs mocha on all *.test.js files in the target project. Tests are run recursively.
+3. `kbscripts test [Specific files can go here and other args to mocha]`  
+   Runs mocha on all \*.test.js files in the target project. Tests are run recursively.
+
+## Using eslint configs to allow ides to use your configs
+
+1. create .eslintrc.js
+2. exports config from kbscripts
+
+```
+module.exports = require('./node_modules/kbscripts/config/eslintrc.js')
+```

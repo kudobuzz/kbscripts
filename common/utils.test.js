@@ -27,7 +27,9 @@ describe('Tests utils functions', () => {
     it('hereRelative()', async () => {
       const base = '/some/folder'
       const relativePath = hereRelative(base)
-      const expectedPath = path.join(__dirname, base).replace(process.cwd(), '.')
+      const expectedPath = path
+        .join(__dirname, base)
+        .replace(process.cwd(), '.')
       chai.expect(relativePath).to.be.equals(expectedPath)
     })
 
