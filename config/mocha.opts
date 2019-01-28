@@ -1,0 +1,4 @@
+  --bail
+  --ui bdd
+  --colors
+  --use strict

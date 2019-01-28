@@ -2,24 +2,21 @@
 
 const spawn = require('cross-spawn')
 const yargs = require('yargs-parser')
-const {
-  getPathToGlobalCommand,
-  resolveExecutable,
-  hereRelative
-} = require('../common/utils')
-
-const executable = 'prettier-standard'
+const { getPathToGlobalCommand, hereRelative, resolveExecutable } = require('../common/utils')
 
 let args = process.argv.slice(2)
 const parsedAgs = yargs(args)
+const executable = 'mocha'
 
 const wasGivenFiles = parsedAgs._length > 0
 
-const filesToApply = wasGivenFiles ? [] : ['**/*.+(js|json|less|css|ts|tsx|md)']
+const filesToApply = wasGivenFiles ? [] : [`${process.cwd()}/**/*.test.js`]
 
-const ignore = ['--ignore-path', hereRelative('../config/prettierignore')]
+args = wasGivenFiles
+  ? args.filter(arg => parsedAgs._.includes(arg) || arg.endsWith('.js'))
+  : args
 
-const config = ['--config', hereRelative('../config/prettierrc.js')]
+const config = ['--recursive', '--exclude', '**/node_modules/**', '--opts', hereRelative('../config/mocha.opts')]
 
 const resolveParams = {
   pathToGlobalCommand: getPathToGlobalCommand(executable),
@@ -29,7 +26,7 @@ const resolveParams = {
 
 const result = spawn.sync(
   resolveExecutable(executable, resolveParams),
-  [...config, ...args, ...ignore, ...filesToApply],
+  [...config, ...args, ...filesToApply],
   { stdio: 'inherit' }
 )
 

@@ -10,7 +10,7 @@ const {
   resolveExecutable
 } = require('./utils')
 
-describe('Tests utils functions', () => {
+describe('Utils functions', () => {
   describe('Successes', () => {
     it('getPathToGlobalCommand() when executable found', async () => {
       const exec = 'node'
@@ -21,7 +21,7 @@ describe('Tests utils functions', () => {
     it('getPathToGlobalCommand() when executable is not found', async () => {
       const exec = 'kitugani'
       const str = getPathToGlobalCommand(exec)
-      chai.expect(str, null)
+      chai.expect(str).to.be.equal(null)
     })
 
     it('hereRelative()', async () => {
