@@ -45,5 +45,5 @@ Install my running `npm install @kudobuzz/kbscripts`
 2. exports config from kbscripts
 
 ```
-module.exports = require('./node_modules/kbscripts/config/eslintrc.js')
+module.exports = require('./node_modules/@kudobuzz/kbscripts/config/eslintrc.js')
 ```
