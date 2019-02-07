@@ -39,7 +39,7 @@ Install my running `npm install @kudobuzz/kbscripts`
 3. `kbscripts test [Specific files can go here and other args to mocha]`  
    Runs mocha on all \*.test.js files in the target project. Tests are run recursively.
 
-3. `kbscripts hooks`
+3. `kbscripts hooks`   
     Runs `prettier` and `lint` in order. Suitable for git hooks. 
 
 ## Using eslint configs to allow ides to use your configs
