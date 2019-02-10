@@ -21,6 +21,7 @@ args = wasGivenFiles
   : args
 
 const config = ['--config', hereRelative('../config/eslintrc.js')]
+const ignore = ['--ignore', hereRelative('../config/eslintignore')]
 
 const resolveParams = {
   pathToGlobalCommand: getPathToGlobalCommand(executable),
@@ -30,7 +31,7 @@ const resolveParams = {
 
 const result = spawn.sync(
   resolveExecutable(executable, resolveParams),
-  [...config, ...args, ...filesToApply],
+  [...config, ...ignore, ...args, ...filesToApply],
   { stdio: 'inherit' }
 )
 
