@@ -21,7 +21,7 @@ args = wasGivenFiles
   : args
 
 const config = ['--config', hereRelative('../config/eslintrc.js')]
-const ignore = ['--ignore', hereRelative('../config/eslintignore')]
+const ignore = ['--ignore-path', hereRelative('../config/eslintignore')]
 
 const resolveParams = {
   pathToGlobalCommand: getPathToGlobalCommand(executable),

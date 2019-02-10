@@ -6,8 +6,9 @@
     "kbscripts": "./bin/kb-scripts.js"
   },
   "scripts": {
-    "lint": "node bin lint",
-    "format": "node bin format"
+    "lint": "node bin/kb-scripts lint",
+    "format": "node bin/kb-scripts format",
+    "test": "node bin/kb-scripts test"
   },
   "repository": {
     "type": "git",
