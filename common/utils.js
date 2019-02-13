@@ -1,10 +1,17 @@
 'use strict'
 const path = require('path')
 const which = require('which')
+const fs = require('fs')
+const readPkgUp = require('read-pkg-up')
+
+const cwd = process.cwd()
+
+const { pkg } = readPkgUp.sync({
+  cwd: fs.realpathSync(cwd)
+})
 
 function hereRelative (p) {
-  const b = path.join(__dirname, p).replace(process.cwd(), '.')
-  return b
+  return path.join(__dirname, p).replace(process.cwd(), '.')
 }
 
 const throwError = error => {
@@ -17,6 +24,24 @@ function getPathToGlobalCommand (executable) {
   } catch (error) {
     return null
   }
+}
+
+function resolveKbScripts () {
+  const executor = 'kbscripts'
+  const path = '../bin/kb-scripts'
+  const moduleName = '@kudobuzz/kbscripts'
+
+  if (pkg.name === moduleName) {
+    return require.resolve(path).replace(process.cwd(), '.')
+  }
+
+  const resolveParams = {
+    pathToGlobalCommand: getPathToGlobalCommand(executor),
+    moduleName,
+    cwd: process.cwd()
+  }
+
+  return resolveExecutable(executor, resolveParams)
 }
 
 function resolveExecutable (executable, params) {
@@ -42,5 +67,6 @@ function resolveExecutable (executable, params) {
 module.exports = {
   hereRelative,
   getPathToGlobalCommand,
+  resolveKbScripts,
   resolveExecutable
 }

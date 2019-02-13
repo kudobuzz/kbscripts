@@ -14,6 +14,18 @@ We have quite a number of js projects and we were finding it difficult updating 
 
 A common configuration library
 
+## Table of Contents
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Scripts](#scripts)
+  - [Using eslint configs to allow ides to use your configs](#using-eslint-configs-to-allow-ides-to-use-your-configs)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Installation
 
 This module is distributed via [npm][npm] which is bundled with [node][node] and
