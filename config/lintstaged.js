@@ -19,10 +19,6 @@ module.exports = {
   concurrent: false,
   linters: {
     'README.md': [`${doctoc} --maxlevel 3 --notitle`, 'git add README.md'],
-    '**/*.+(js|json|less|css|ts|tsx|md)': [
-      `${kbScripts} format`,
-      `${kbScripts} lint`,
-      'git add'
-    ]
+    '**/*.js': [`${kbScripts} format`, `${kbScripts} lint`, 'git add']
   }
 }
