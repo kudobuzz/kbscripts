@@ -9,7 +9,7 @@ const {
 
 const args = process.argv.slice(2)
 const executable = 'lint-staged'
-const config = ['-v -d', '--config', hereRelative('../config/lintstaged.js')]
+const config = ['--config', hereRelative('../config/lintstaged.js')]
 
 const resolveParams = {
   pathToGlobalCommand: getPathToGlobalCommand(executable),
@@ -18,7 +18,7 @@ const resolveParams = {
 }
 const result = spawn.sync(
   resolveExecutable(executable, resolveParams),
-  [...config, ...args],
+  [...config, ['--debug'], ...args],
   { stdio: 'inherit' }
 )
 
