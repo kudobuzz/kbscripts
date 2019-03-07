@@ -10,7 +10,7 @@ const {
 const args = process.argv.slice(2)
 const executable = 'lint-staged'
 
-const config = ['--config', hereRelative('../config/lintstaged.js')]
+const config = ['-v -d', '--config', hereRelative('../config/lintstaged.js')]
 
 const resolveParams = {
   pathToGlobalCommand: getPathToGlobalCommand(executable),
