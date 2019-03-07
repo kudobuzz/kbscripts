@@ -26,7 +26,6 @@ const resolveParams = {
   moduleName: executable,
   cwd: process.cwd()
 }
-
 const result = spawn.sync(
   resolveExecutable(executable, resolveParams),
   [...config, ...ignore, ...args, ...filesToApply],

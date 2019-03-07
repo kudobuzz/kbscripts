@@ -5,7 +5,6 @@ const fs = require('fs')
 const readPkgUp = require('read-pkg-up')
 
 const cwd = process.cwd()
-
 const { pkg } = readPkgUp.sync({
   cwd: fs.realpathSync(cwd)
 })
