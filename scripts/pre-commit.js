@@ -1,5 +1,3 @@
-'use strict'
-
 const spawn = require('cross-spawn')
 const {
   getPathToGlobalCommand,
@@ -18,7 +16,7 @@ const resolveParams = {
 }
 const result = spawn.sync(
   resolveExecutable(executable, resolveParams),
-  [...config, ['--debug', '--verbose'], ...args],
+  [...config, ...['--debug', '--verbose'], ...args],
   { stdio: 'inherit' }
 )
 
