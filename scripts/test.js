@@ -1,33 +1,43 @@
 'use strict'
 
+process.env.NODE_ENV = 'test'
+
 const spawn = require('cross-spawn')
 const yargs = require('yargs-parser')
-const { getPathToGlobalCommand, hereRelative, resolveExecutable } = require('../common/utils')
+const {
+  getPathToGlobalCommand,
+  hereRelative,
+  resolveExecutable
+} = require('../common/utils')
 
 let args = process.argv.slice(2)
 const parsedAgs = yargs(args)
 const executable = 'mocha'
 
-const wasGivenFiles = parsedAgs._length > 0
-
+const wasGivenFiles = parsedAgs._.length > 0
 const filesToApply = wasGivenFiles ? [] : [`${process.cwd()}/**/*.test.js`]
 
 args = wasGivenFiles
-  ? args.filter(arg => parsedAgs._.includes(arg) || arg.endsWith('.js'))
+  ? args.filter(arg => !parsedAgs._.includes(arg) || arg.endsWith('.js'))
   : args
 
-const config = ['--recursive', '--exclude', '**/node_modules/**', '--opts', hereRelative('../config/mocha.opts')]
+const config = [
+  '--recursive',
+  '--exclude',
+  '**/node_modules/**',
+  '--opts',
+  hereRelative('../config/mocha.opts')
+]
 
 const resolveParams = {
   pathToGlobalCommand: getPathToGlobalCommand(executable),
   moduleName: executable,
   cwd: process.cwd()
 }
-
 const result = spawn.sync(
   resolveExecutable(executable, resolveParams),
   [...config, ...args, ...filesToApply],
   { stdio: 'inherit' }
 )
 
-process.exit(result)
+process.exit(result.status)

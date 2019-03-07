@@ -13,7 +13,7 @@ const executable = 'prettier-standard'
 let args = process.argv.slice(2)
 const parsedAgs = yargs(args)
 
-const wasGivenFiles = parsedAgs._length > 0
+const wasGivenFiles = parsedAgs._.length > 0
 
 const filesToApply = wasGivenFiles ? [] : ['**/*.+(js|json|less|css|ts|tsx|md)']
 
@@ -33,4 +33,4 @@ const result = spawn.sync(
   { stdio: 'inherit' }
 )
 
-process.exit(result)
+process.exit(result.status)

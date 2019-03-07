@@ -1,5 +1,3 @@
-'use strict'
-
 const spawn = require('cross-spawn')
 const yargs = require('yargs-parser')
 const {
@@ -12,12 +10,12 @@ let args = process.argv.slice(2)
 const parsedAgs = yargs(args)
 const executable = 'eslint'
 
-const wasGivenFiles = parsedAgs._length > 0
+const wasGivenFiles = parsedAgs._.length > 0
 
 const filesToApply = wasGivenFiles ? [] : ['.']
 
 args = wasGivenFiles
-  ? args.filter(arg => parsedAgs._.includes(arg) || arg.endsWith('.js'))
+  ? args.filter(arg => !parsedAgs._.includes(arg) || arg.endsWith('.js'))
   : args
 
 const config = ['--config', hereRelative('../config/eslintrc.js')]
@@ -35,4 +33,4 @@ const result = spawn.sync(
   { stdio: 'inherit' }
 )
 
-process.exit(result)
+process.exit(result.status)
