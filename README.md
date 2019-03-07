@@ -5,7 +5,6 @@
 </div>
 
 <hr />
-
 # Problem
 
 We have quite a number of js projects and we were finding it difficult updating tooling across these projects
