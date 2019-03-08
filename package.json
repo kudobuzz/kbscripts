@@ -8,7 +8,7 @@
   "scripts": {
     "lint": "node bin/kb-scripts lint",
     "format": "node bin/kb-scripts format",
-    "test": "node bin/kb-scripts test scripts/**/*.test.js"
+    "test": "node bin/kb-scripts test"
   },
   "repository": {
     "type": "git",

@@ -10,7 +10,7 @@ const {
   resolveExecutable
 } = require('./utils')
 
-describe('utils', () => {
+describe('Utils', () => {
   it('getPathToGlobalCommand() when executable found', async () => {
     const exec = 'node'
     const str = getPathToGlobalCommand(exec)
