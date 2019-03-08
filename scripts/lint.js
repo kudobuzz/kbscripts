@@ -1,4 +1,3 @@
-'use strict'
 const spawn = require('cross-spawn')
 const yargs = require('yargs-parser')
 const {
