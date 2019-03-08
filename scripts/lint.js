@@ -15,9 +15,7 @@ const wasGivenFiles = parsedAgs._.length > 0
 
 const filesToApply = wasGivenFiles ? [] : ['.']
 
-args = wasGivenFiles
-  ? args.filter(arg => !parsedAgs._.includes(arg) || arg.endsWith('.js'))
-  : args
+args = wasGivenFiles ? args : args
 
 const config = ['--config', hereRelative('../config/eslintrc.js')]
 const ignore = ['--ignore-path', hereRelative('../config/eslintignore')]
