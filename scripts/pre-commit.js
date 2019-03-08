@@ -16,7 +16,7 @@ const resolveParams = {
 }
 const result = spawn.sync(
   resolveExecutable(executable, resolveParams),
-  [...config, ...['--debug', '--verbose'], ...args],
+  [...config, ...['--debug'], ...args],
   { stdio: 'inherit' }
 )
 
