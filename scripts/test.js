@@ -1,7 +1,5 @@
 'use strict'
 
-process.env.NODE_ENV = 'test'
-
 const spawn = require('cross-spawn')
 const yargs = require('yargs-parser')
 const {
