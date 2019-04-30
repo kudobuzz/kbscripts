@@ -49,5 +49,5 @@ function startScript () {
     stdio: 'inherit'
   })
 
-  process.exit(result)
+  process.exit(result.status)
 }

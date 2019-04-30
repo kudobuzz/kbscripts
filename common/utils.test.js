@@ -14,7 +14,7 @@ describe('Utils', () => {
   it('getPathToGlobalCommand() when executable found', async () => {
     const exec = 'node'
     const str = getPathToGlobalCommand(exec)
-    chai.expect(which.sync(exec), str)
+    chai.expect(which.sync(exec)).equal(str)
   })
 
   it('getPathToGlobalCommand() when executable is not found', async () => {
