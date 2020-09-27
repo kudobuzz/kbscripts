@@ -10,7 +10,7 @@ const {
 
 const executable = 'prettier-standard'
 
-let args = process.argv.slice(2)
+const args = process.argv.slice(2)
 const parsedAgs = yargs(args)
 
 const wasGivenFiles = parsedAgs._.length > 0

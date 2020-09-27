@@ -18,8 +18,9 @@ const resolveParams = {
 const doctoc = resolveExecutable('doctoc', resolveParams)
 
 module.exports = {
+  name: 'good',
   concurrent: false,
-  linters: {
+  config: {
     'README.md': [`${doctoc} --maxlevel 3 --notitle`, 'git add README.md'],
     '**/*.js': [`${kbScripts} format`, `${kbScripts} lint`, 'git add']
   }

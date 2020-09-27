@@ -23,8 +23,8 @@ const config = [
   '--recursive',
   '--exclude',
   '**/node_modules/**',
-  '--opts',
-  hereRelative('../config/mocha.opts')
+  '--config',
+  hereRelative('../config/mocharc.js')
 ]
 
 const resolveParams = {
