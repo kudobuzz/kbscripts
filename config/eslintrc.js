@@ -2,7 +2,8 @@
 module.exports = {
   extends: [
     require.resolve('eslint-config-standard'),
-    'plugin:security/recommended'
+    'plugin:security/recommended',
+    'prettier'
   ],
   plugins: ['security', 'mocha', 'no-loops', 'this'],
   rules: {
