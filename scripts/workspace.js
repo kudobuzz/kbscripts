@@ -228,6 +228,16 @@ createNpmCommand({
   alias: 't'
 })
 
+createNpmCommand({
+  command: 'shrinkwrap',
+  alias: 'shrinkwrap'
+})
+
+createNpmCommand({
+  command: 'audit',
+  alias: 'audit'
+})
+
 
 
 
