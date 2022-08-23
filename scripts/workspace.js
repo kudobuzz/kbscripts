@@ -1,6 +1,6 @@
 'use strict'
 const spawn = require('child_process').spawnSync
-const argv = require('yargs/yargs')(process.argv.slice(2))
+const argv = require('yargs/yargs')(process.argv.slice(2)).scriptName('workspace')
 const { logInfo, logError } = require('../common/logger')
 const packageJson = require('../package.json')
 
@@ -10,6 +10,8 @@ const workspaceConfig = require(`${workspaceRoot}/package.json`)?.workspaces
 if (!workspaceConfig) {
   throw new Error('No workspaces config found in package.json', workspaceConfig)
 }
+
+const commonUsage = 'Usage: $0 <command> [options]'
 
 /**
  * Copy .env.sample to .env for a workspace
@@ -34,23 +36,6 @@ const ensureEcosystemExists = (workspace)=>{
   } catch (err) {
     logError('No ecosystem.config.js found in ', path)
   }
-}
-
-const startWorkspaceApplication = workspace => {
-    ensureEcosystemExists(workspace)
-    logInfo("Starting services in ->", workspace)
-    spawn('pm2', ['start', 'ecosystem.config.js', `--namespace=${workspace}`], {
-      cwd: `${workspaceRoot}/${workspace}`,
-      stdio: 'inherit',
-    })
-}
-
-const stopWorkspaceApplication = workspace => {
-  ensureEcosystemExists(workspace)
-  spawn('pm2', ['stop', 'ecosystem.config.js', `--namespace=${workspace}`], {
-    cwd: `${workspaceRoot}/${workspace}`,
-    stdio: 'inherit',
-  })
 }
 
 const initialWorkspaceCommand = ({
@@ -98,7 +83,7 @@ const createNpmCommand = ({ command, alias }) => {
     )
     .example(`$0 ${command}`, 'packages in workspaces')
     .alias(alias, command)
-    .usage('Usage: $0 <command> [options]')
+    .usage(commonUsage)
 }
 
 const bootstrapDocker = () => {
@@ -133,7 +118,7 @@ const bootstrapDocker = () => {
     )
     .example('$0 docker-bootstrap', 'bootstrap docker in workspaces')
     .alias('d', 'docker-bootstrap')
-    .usage('Usage: $0 <command> [options]')
+    .usage(commonUsage)
 }
 
 /**
@@ -174,9 +159,9 @@ const bootstrapWorkspace = () => {
         process.exit(result.status)
       }
     )
-    .example('$0 bootstrap', 'boo in workspaces')
+    .example('$0 bootstrap', 'bootstrap workspaces')
     .alias('b', 'bootstrap')
-    .usage('Usage: $0 <command> [options]')
+    .usage(commonUsage)
 }
 
 /**
@@ -207,7 +192,7 @@ const applicationInstances = ({ command, alias }) => {
     )
     .example(`$0 ${command}`, `${command} workspace application`)
     .alias(alias, command)
-    .usage('Usage: $0 <command> [options]')
+    .usage(commonUsage)
 }
 
 
