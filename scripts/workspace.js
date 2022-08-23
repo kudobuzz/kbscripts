@@ -60,15 +60,15 @@ const bootstrapDocker = () => {
               alias: 'w',
               default: workspaceConfig.join(',')
             },
-            dockerPath: {
+            path: {
                 alias: 'dp'
             }
           })
-          .demandOption('workspace').demandOption('dockerPath')
+          .demandOption('workspace').demandOption('path')
       },
       function handler (args) {
         const workspaces = args.workspace.split(',')
-        const baseDockerPath = args.dockerPath
+        const baseDockerPath = `${process.cwd()}/${args.path}`
         console.log(
           '\x1b[36m%s\x1b[0m',
           'Copying Dockerfile to ', workspaces
