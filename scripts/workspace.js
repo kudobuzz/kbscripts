@@ -1,11 +1,67 @@
 'use strict'
 const spawn = require('child_process').spawnSync
 const argv = require('yargs/yargs')(process.argv.slice(2))
-const { log } = require('../common/logger')
+const { logInfo, logError } = require('../common/logger')
 const packageJson = require('../package.json')
-const workspaceConfig = require(`${process.cwd()}/package.json`)?.workspaces
+
+const workspaceRoot = process.cwd()
+
+const workspaceConfig = require(`${workspaceRoot}/package.json`)?.workspaces
 if (!workspaceConfig) {
   throw new Error('No workspaces config found in package.json', workspaceConfig)
+}
+
+/**
+ * Copy .env.sample to .env for a workspace
+ */
+const deleteNodeModulesCopyEnvSample = workspace => {
+  const baseLocation = `${workspaceRoot}/${workspace}`
+  const sampleEnvLocation = `${baseLocation}/.env.sample`
+  const destination = `${baseLocation}/.env`
+  logInfo('Coping .env.sample from ', sampleEnvLocation, '> ', destination)
+  spawn('cp', [sampleEnvLocation, destination], {
+    stdio: 'inherit'
+  })
+  const nodeModulesLocation = `${baseLocation}/node_modules`
+  logInfo('Deleting Nodemodules -> ', nodeModulesLocation)
+  spawn('rm', ['-r', nodeModulesLocation])
+}
+
+const ensureEcosystemExists = (workspace)=>{
+  const path = `${workspaceRoot}/${workspace}/ecosystem.config.js`
+  try {
+    require.resolve(path)
+  } catch (err) {
+    logError('No ecosystem.config.js found in ', path)
+  }
+}
+
+const startWorkspaceApplication = workspace => {
+    ensureEcosystemExists(workspace)
+    logInfo("Starting services in ->", workspace)
+    spawn('pm2', ['start', 'ecosystem.config.js', `--namespace=${workspace}`], {
+      cwd: `${workspaceRoot}/${workspace}`,
+      stdio: 'inherit',
+    })
+}
+
+const stopWorkspaceApplication = workspace => {
+  ensureEcosystemExists(workspace)
+  spawn('pm2', ['stop', 'ecosystem.config.js', `--namespace=${workspace}`], {
+    cwd: `${workspaceRoot}/${workspace}`,
+    stdio: 'inherit',
+  })
+}
+
+const initialWorkspaceCommand = ({
+  workspace,
+  command
+})=>{
+  ensureEcosystemExists(workspace)
+  spawn('pm2', [command, 'ecosystem.config.js', `--namespace=${workspace}`], {
+    cwd: `${workspaceRoot}/${workspace}`,
+    stdio: 'inherit',
+  })
 }
 
 /**
@@ -29,8 +85,11 @@ const createNpmCommand = ({ command, alias }) => {
       function handler (args) {
         const [command, ...packages] = args._
         const workspaces = args.workspace.split(',')
-        const npmCommands = [command, ...packages, '-w ', ...workspaces]
-        log('running command', 'npm', ...npmCommands)
+        const workspacesCommand = workspaces.map(
+          workspace => `--workspace=${workspace}`
+        )
+        const npmCommands = [command, ...packages, ...workspacesCommand]
+        logInfo('Running command: ', 'npm', ...npmCommands)
         const result = spawn('npm', npmCommands, {
           stdio: 'inherit'
         })
@@ -63,10 +122,10 @@ const bootstrapDocker = () => {
       },
       function handler (args) {
         const workspaces = args.workspace.split(',')
-        const baseDockerPath = `${process.cwd()}/${args.path}`
-        log('Copying Dockerfile to ', workspaces)
+        const baseDockerPath = `${workspaceRoot}/${args.path}`
+        logInfo('Copying Dockerfile to ', workspaces)
         workspaces.forEach(workspace => {
-          spawn('cp', [baseDockerPath, `${process.cwd()}/${workspace}`], {
+          spawn('cp', [baseDockerPath, `${workspaceRoot}/${workspace}`], {
             stdio: 'inherit'
           })
         })
@@ -97,20 +156,18 @@ const bootstrapWorkspace = () => {
       },
       function handler (args) {
         const workspaces = args.workspace.split(',')
-        const copyEnvSampleToEnv = workspace => {
-          const sampleEnvLocation = `${process.cwd()}/${workspace}/.env.sample`
-          const destination = `${process.cwd()}/${workspace}/.env`
-          log('Coping .env.sample from ', sampleEnvLocation, '> ', destination)
-          spawn('cp', [sampleEnvLocation, destination], {
-            stdio: 'inherit'
-          })
-        }
-
-        workspaces.forEach(workspace => {
-          copyEnvSampleToEnv(workspace)
+        const workspacesCommand = workspaces.map(
+          workspace => `--workspace=${workspace}`
+        )
+        workspaces.map(workspace => {
+          deleteNodeModulesCopyEnvSample(workspace)
         })
-        const npmCommands = ['install', '-w ', ...workspaces]
-        log('Running command', 'npm', ...npmCommands)
+        const npmCommands = [
+          'install',
+          ...workspacesCommand,
+          '--legacy-peer-deps'
+        ]
+        logInfo('Running command: ', 'npm', ...npmCommands)
         const result = spawn('npm', npmCommands, {
           stdio: 'inherit'
         })
@@ -122,9 +179,51 @@ const bootstrapWorkspace = () => {
     .usage('Usage: $0 <command> [options]')
 }
 
+/**
+ * Bootstrap workspaces
+ */
+const applicationInstances = ({ command, alias }) => {
+  argv
+    .command(
+      command,
+      `${command} workspace applications`,
+      function (yargs) {
+        return yargs
+          .options({
+            workspace: {
+              alias: 'w',
+              default: workspaceConfig.join(',')
+            }
+          })
+          .demandOption('workspace')
+      },
+      function handler (args) {
+        const workspaces = args.workspace.split(',')
+        workspaces.map(workspace=> initialWorkspaceCommand({
+          workspace,
+          command
+        }))
+      }
+    )
+    .example(`$0 ${command}`, `${command} workspace application`)
+    .alias(alias, command)
+    .usage('Usage: $0 <command> [options]')
+}
+
+
 //   Docker scripts
 bootstrapDocker()
 bootstrapWorkspace()
+applicationInstances({
+  command: 'start',
+  alias: 'start'
+})
+applicationInstances({
+  command: 'stop',
+  alias: 'stop'
+})
+
+
 
 //  npm scripts for workspaces
 createNpmCommand({
@@ -143,6 +242,9 @@ createNpmCommand({
   command: 'test',
   alias: 't'
 })
+
+
+
 
 // start cli
 argv

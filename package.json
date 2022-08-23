@@ -47,6 +47,7 @@
     "glob": "7.1.6",
     "husky": "4.3.8",
     "mocha": "10.0.0",
+    "pm2": "5.2.0",
     "prettier-standard": "15.0.1",
     "read-pkg-up": "7.0.1",
     "which": "2.0.2",

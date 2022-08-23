@@ -2,11 +2,14 @@
 
 const chalk = require('chalk')
 
-const log = (...args) => console.log(chalk.white('==>', ...args))
+const logInfo = (...args) => console.log('\n', chalk.white('==>', ...args))
 
-const error = (...args) => chalk.red('==>', ...args)
+const logError = (...args) => {
+  console.error(chalk.red('==>', ...args))
+  process.exit(1)
+}
 
 module.exports = {
-  log,
-  error
+  logInfo,
+  logError
 }
