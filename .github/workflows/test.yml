@@ -10,7 +10,7 @@ on:
     branches-ignore: [master, development, main]
 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
 
