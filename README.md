@@ -54,10 +54,28 @@ Install my running `npm install @kudobuzz/kbscripts`
 
 This command allow managing package installation for workspaces. This command uses npm workspace out of the box [Learn more](https://docs.npmjs.com/cli/v7/using-npm/workspaces/).
 
+### Bootstrap
+
+This allows you to setup all workspaces
+
+- It copies .env.sample > .env
+- It runs npm install for workspaces
+
+**Usage**
+```sh
+kbscript workspace bootstrap
+```
+
+| Option    | Description                                             | Example          |
+| --------- | ------------------------------------------------------- | ---------------- |
+| workspace | This allows you to run a command for a single workspace | -- workspace api |
+
 ### NPM Commands
 
 This workspace commands supports all npm installation commands `install, ci, uninstall and test`
-To run a command for all workspaces use. 
+To run a command for all workspaces use.
+
+**Usage**
 
 ```sh
 kbscript workspace {command} joi
@@ -65,17 +83,15 @@ kbscript workspace {command} joi
 
 Replace {command} with one of install, test, ci or uninstall
 
-| Option      | Description                                             | Example          |
-| ----------- | ------------------------------------------------------- | ---------------- |
+| Option    | Description                                             | Example          |
+| --------- | ------------------------------------------------------- | ---------------- |
 | workspace | This allows you to run a command for a single workspace | -- workspace api |
-
 
 ### Docker-bootsrap
 
-This allows you to copy a base Dockerfile to all workspaces. 
-Usage
+This allows you to copy a base Dockerfile to all workspaces.
 
+**Usage**
 ```sh
 kbscript workspace docker-bootstrap --path {PATH_TO_DOCKER_FILE}
 ```
-

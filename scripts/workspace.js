@@ -1,7 +1,7 @@
 'use strict'
 const spawn = require('child_process').spawnSync
 const argv = require('yargs/yargs')(process.argv.slice(2))
-const path = require('path')
+const { log } = require('../common/logger')
 const packageJson = require('../package.json')
 const workspaceConfig = require(`${process.cwd()}/package.json`)?.workspaces
 if (!workspaceConfig) {
@@ -30,15 +30,9 @@ const createNpmCommand = ({ command, alias }) => {
         const [command, ...packages] = args._
         const workspaces = args.workspace.split(',')
         const npmCommands = [command, ...packages, '-w ', ...workspaces]
-        console.log(
-          '\x1b[36m%s\x1b[0m',
-          'running command',
-          'npm',
-          ...npmCommands
-        )
+        log('running command', 'npm', ...npmCommands)
         const result = spawn('npm', npmCommands, {
-          stdio: 'inherit',
-          shell: true
+          stdio: 'inherit'
         })
         process.exit(result.status)
       }
@@ -61,26 +55,20 @@ const bootstrapDocker = () => {
               default: workspaceConfig.join(',')
             },
             path: {
-                alias: 'dp'
+              alias: 'dp'
             }
           })
-          .demandOption('workspace').demandOption('path')
+          .demandOption('workspace')
+          .demandOption('path')
       },
       function handler (args) {
         const workspaces = args.workspace.split(',')
         const baseDockerPath = `${process.cwd()}/${args.path}`
-        console.log(
-          '\x1b[36m%s\x1b[0m',
-          'Copying Dockerfile to ', workspaces
-        )
+        log('Copying Dockerfile to ', workspaces)
         workspaces.forEach(workspace => {
-          spawn(
-            'cp',
-            [baseDockerPath, `${process.cwd()}/${workspace}`],
-            {
-              stdio: 'inherit'
-            }
-          )
+          spawn('cp', [baseDockerPath, `${process.cwd()}/${workspace}`], {
+            stdio: 'inherit'
+          })
         })
       }
     )
@@ -89,8 +77,54 @@ const bootstrapDocker = () => {
     .usage('Usage: $0 <command> [options]')
 }
 
-//   CI scripts
+/**
+ * Bootstrap workspaces
+ */
+const bootstrapWorkspace = () => {
+  argv
+    .command(
+      'bootstrap',
+      'bootstrap workspace',
+      function (yargs) {
+        return yargs
+          .options({
+            workspace: {
+              alias: 'w',
+              default: workspaceConfig.join(',')
+            }
+          })
+          .demandOption('workspace')
+      },
+      function handler (args) {
+        const workspaces = args.workspace.split(',')
+        const copyEnvSampleToEnv = workspace => {
+          const sampleEnvLocation = `${process.cwd()}/${workspace}/.env.sample`
+          const destination = `${process.cwd()}/${workspace}/.env`
+          log('Coping .env.sample from ', sampleEnvLocation, '> ', destination)
+          spawn('cp', [sampleEnvLocation, destination], {
+            stdio: 'inherit'
+          })
+        }
+
+        workspaces.forEach(workspace => {
+          copyEnvSampleToEnv(workspace)
+        })
+        const npmCommands = ['install', '-w ', ...workspaces]
+        log('Running command', 'npm', ...npmCommands)
+        const result = spawn('npm', npmCommands, {
+          stdio: 'inherit'
+        })
+        process.exit(result.status)
+      }
+    )
+    .example('$0 bootstrap', 'boo in workspaces')
+    .alias('b', 'bootstrap')
+    .usage('Usage: $0 <command> [options]')
+}
+
+//   Docker scripts
 bootstrapDocker()
+bootstrapWorkspace()
 
 //  npm scripts for workspaces
 createNpmCommand({
@@ -115,6 +149,6 @@ argv
   .demandCommand(
     1,
     1,
-    'choose a command: install, ci, test, uninstall, docker-bootstrap'
+    'choose a command: install, ci, test, uninstall, docker-bootstrap, boostrap'
   )
   .version(packageJson.version).argv
