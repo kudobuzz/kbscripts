@@ -1,17 +1,31 @@
 'use strict'
+const util = require('util')
 const spawn = require('child_process').spawnSync
+const spawnPromise = util.promisify(require('child_process').spawn)
 const argv = require('yargs/yargs')(process.argv.slice(2)).scriptName('workspace')
 const { logInfo, logError } = require('../common/logger')
 const packageJson = require('../package.json')
 
 const workspaceRoot = process.cwd()
 
-const workspaceConfig = require(`${workspaceRoot}/package.json`)?.workspaces
+const workspaceConfig = require(`${workspaceRoot}/package.json`)?.kbscripts?.workspaces
 if (!workspaceConfig) {
   throw new Error('No workspaces config found in package.json', workspaceConfig)
 }
 
 const commonUsage = 'Usage: $0 <command> [options]'
+
+/**
+ * Run a single npm command
+ */
+const runNpmCommandInWorkspace = ({ command, args=[], workspace })=>{
+  const npmCommands = [command, ...args]
+  logInfo('Running command: ', 'npm', ...npmCommands, ' in', workspace)
+  return spawnPromise('npm', [command, ...args], {
+    stdio: 'inherit',
+    cwd: workspace
+  })
+}
 
 /**
  * Copy .env.sample to .env for a workspace
@@ -67,18 +81,12 @@ const createNpmCommand = ({ command, alias }) => {
           })
           .demandOption('workspace')
       },
-      function handler (args) {
+      async function handler (args) {
         const [command, ...packages] = args._
         const workspaces = args.workspace.split(',')
-        const workspacesCommand = workspaces.map(
-          workspace => `--workspace=${workspace}`
-        )
-        const npmCommands = [command, ...packages, ...workspacesCommand]
-        logInfo('Running command: ', 'npm', ...npmCommands)
-        const result = spawn('npm', npmCommands, {
-          stdio: 'inherit'
-        })
-        process.exit(result.status)
+        await Promise.all(workspaces.map(workspace=>{
+          return runNpmCommandInWorkspace({ command, args: [...packages], workspace })
+        }))
       }
     )
     .example(`$0 ${command}`, 'packages in workspaces')
@@ -139,24 +147,14 @@ const bootstrapWorkspace = () => {
           })
           .demandOption('workspace')
       },
-      function handler (args) {
+      async function handler (args) {
         const workspaces = args.workspace.split(',')
-        const workspacesCommand = workspaces.map(
-          workspace => `--workspace=${workspace}`
-        )
         workspaces.map(workspace => {
           deleteNodeModulesCopyEnvSample(workspace)
         })
-        const npmCommands = [
-          'install',
-          ...workspacesCommand,
-          '--legacy-peer-deps'
-        ]
-        logInfo('Running command: ', 'npm', ...npmCommands)
-        const result = spawn('npm', npmCommands, {
-          stdio: 'inherit'
-        })
-        process.exit(result.status)
+        return Promise.all(workspaces.map(workspace=>{
+          return runNpmCommandInWorkspace({ command: 'install', args: ['--legacy-peer-deps'], workspace })
+        }))
       }
     )
     .example('$0 bootstrap', 'bootstrap workspaces')
