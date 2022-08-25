@@ -52,7 +52,7 @@ Install my running `npm install @kudobuzz/kbscripts`
 
 ## Workspace
 
-This command allow managing package installation for workspaces. This command uses npm workspace out of the box [Learn more](https://docs.npmjs.com/cli/v7/using-npm/workspaces/).
+This command allow managing package installation for workspaces.
 
 ### Bootstrap
 
