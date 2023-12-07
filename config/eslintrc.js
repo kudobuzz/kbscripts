@@ -19,7 +19,7 @@ module.exports = {
     "mocha/prefer-arrow-callback": 2,
     "mocha/no-return-and-callback": "error",
     'mocha/no-exclusive-tests': 'error',
-    'mocha/no-pending-tests': 'warn',
+    'mocha/no-pending-tests': 'error',
   },
   parserOptions: {
     sourceType: "script",
