@@ -18,6 +18,8 @@ module.exports = {
     "mocha/valid-test-description": ["warn", "^[a-z]"],
     "mocha/prefer-arrow-callback": 2,
     "mocha/no-return-and-callback": "error",
+    'mocha/no-exclusive-tests': 'error',
+    'mocha/no-skipped-tests': 'error',
   },
   parserOptions: {
     sourceType: "script",
