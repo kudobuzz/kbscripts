@@ -27,9 +27,9 @@ else {
         .replace(/test/, '')
         .replace(/\.js/, '')
     )
-    .filter(script=> !isEmpty(script))
+    .filter(script => !isEmpty(script))
     .join('\n ')
-    
+
   const noScriptProvidedMessage = `\n Usage: ${bin} [script] [--flags] \n Available Scripts: \n ${scripts} \n\n\n\nOptions:\nAll options depend on the script. Docs will be improved eventually, but for most scripts you can assume that the args you pass will be forwarded to the respective tool that's being run under the hood.\nMay the force be with you.
 `
   console.log(noScriptProvidedMessage)

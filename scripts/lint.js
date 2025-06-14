@@ -11,6 +11,11 @@ let args = process.argv.slice(2)
 const parsedAgs = yargs(args)
 const executable = 'eslint'
 
+const customIgnorePath = parsedAgs['ignore-path']
+if (customIgnorePath) {
+  args = args.filter((arg) => !arg.startsWith('--ignore-path'))
+}
+
 const wasGivenFiles = parsedAgs._.length > 0
 
 const filesToApply = wasGivenFiles ? [] : ['.']
@@ -18,7 +23,10 @@ const filesToApply = wasGivenFiles ? [] : ['.']
 args = wasGivenFiles ? args : args
 
 const config = ['--config', hereRelative('../config/eslintrc.js')]
-const ignore = ['--ignore-path', hereRelative('../config/eslintignore')]
+const ignore = [
+  '--ignore-path',
+  customIgnorePath || hereRelative('../config/eslintignore')
+]
 
 const resolveParams = {
   pathToGlobalCommand: getPathToGlobalCommand(executable),
